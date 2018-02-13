@@ -49,7 +49,7 @@ settings::settings()
     host_pool_capacity(0),
     hosts_file("hosts.cache"),
     self(unspecified_network_address),
-    bitcoin_cash(false),
+    // bitcoin_cash(false),
 
     // [log]
     debug_file("debug.log"),
@@ -62,7 +62,7 @@ settings::settings()
     statistics_server(unspecified_network_address),
     verbose(false)
 {
-    set_bitcoin_cash(false);
+    // set_bitcoin_cash(false);
 }
 
 // Use push_back due to initializer_list bug:
@@ -75,7 +75,8 @@ settings::settings(config::settings context)
     {
         case config::settings::mainnet:
         {
-#ifdef LITECOIN
+// #ifdef LITECOIN
+#ifdef BITPRIM_CURRENCY_LTC
             identifier = 0xdbb6c0fb; 
             inbound_port = 9333;
             seeds.reserve(5);
@@ -91,29 +92,31 @@ settings::settings(config::settings context)
             // Seeds based on satoshi client v0.14.0 plus voskuil.org.
             seeds.reserve(6);
 
-            if (bitcoin_cash) {
-                seeds.push_back({ "seed.bitcoinabc.org", 8333 });
-                seeds.push_back({ "seed-abc.bitcoinforks.org", 8333 });
-                seeds.push_back({ "btccash-seeder.bitcoinunlimited.info", 8333 });
-                seeds.push_back({ "seed.bitprim.org", 8333 });
-                seeds.push_back({ "seed.deadalnix.me", 8333 });
-                seeds.push_back({ "seeder.criptolayer.net", 8333 });
-            } else {
-                seeds.push_back({ "seed.bitcoin.sipa.be", 8333 });
-                seeds.push_back({ "dnsseed.bluematt.me", 8333 });
-                seeds.push_back({ "dnsseed.bitcoin.dashjr.org", 8333 });
-                seeds.push_back({ "seed.bitcoinstats.com", 8333 });
-                seeds.push_back({ "seed.bitcoin.jonasschnelli.ch", 8333 });
-                seeds.push_back({ "seed.voskuil.org", 8333 });
-            }
-#endif
+    #ifdef BITPRIM_CURRENCY_BCH
+            seeds.push_back({ "seed.bitcoinabc.org", 8333 });
+            seeds.push_back({ "seed-abc.bitcoinforks.org", 8333 });
+            seeds.push_back({ "btccash-seeder.bitcoinunlimited.info", 8333 });
+            seeds.push_back({ "seed.bitprim.org", 8333 });
+            seeds.push_back({ "seed.deadalnix.me", 8333 });
+            seeds.push_back({ "seeder.criptolayer.net", 8333 });
+    #else
+            seeds.push_back({ "seed.bitcoin.sipa.be", 8333 });
+            seeds.push_back({ "dnsseed.bluematt.me", 8333 });
+            seeds.push_back({ "dnsseed.bitcoin.dashjr.org", 8333 });
+            seeds.push_back({ "seed.bitcoinstats.com", 8333 });
+            seeds.push_back({ "seed.bitcoin.jonasschnelli.ch", 8333 });
+            seeds.push_back({ "seed.voskuil.org", 8333 });
+    #endif // BITPRIM_CURRENCY_BCH
+#endif //BITPRIM_CURRENCY_LTC
             break;
         }
 
         // Seeds based on satoshi client v0.14.0 plus voskuil.org.
         case config::settings::testnet:
         {
-#ifdef LITECOIN
+
+// #ifdef LITECOIN
+#ifdef BITPRIM_CURRENCY_LTC
             identifier = 4056470269;
             inbound_port = 19335;
             seeds.reserve(2);
@@ -122,25 +125,24 @@ settings::settings(config::settings context)
 #else
             identifier = 118034699;
             inbound_port = 18333;
-
-            if (bitcoin_cash) {
-                seeds.reserve(6);
-                seeds.push_back({ "testnet-seed.bitcoinabc.org", 18333 });
-                seeds.push_back({ "testnet-seed-abc.bitcoinforks.org", 18333 });
-                seeds.push_back({ "testnet-seed.bitcoinunlimited.info", 18333 });
-                seeds.push_back({ "testnet-seed.bitprim.org", 18333 });
-                seeds.push_back({ "testnet-seed.deadalnix.me", 18333 });
-                seeds.push_back({ "testnet-seeder.criptolayer.net", 18333 });
-            } else {
-                // Seeds based on satoshi client v0.14.0 plus voskuil.org.
-                seeds.reserve(5);
-                seeds.push_back({ "testnet-seed.bitcoin.jonasschnelli.ch", 18333 });
-                seeds.push_back({ "seed.tbtc.petertodd.org", 18333 });
-                seeds.push_back({ "testnet-seed.bluematt.me", 18333 });
-                seeds.push_back({ "testnet-seed.bitcoin.schildbach.de", 18333 });
-                seeds.push_back({ "testnet-seed.voskuil.org", 18333 });
-            }
-#endif
+    #ifdef BITPRIM_CURRENCY_BCH
+            seeds.reserve(6);
+            seeds.push_back({ "testnet-seed.bitcoinabc.org", 18333 });
+            seeds.push_back({ "testnet-seed-abc.bitcoinforks.org", 18333 });
+            seeds.push_back({ "testnet-seed.bitcoinunlimited.info", 18333 });
+            seeds.push_back({ "testnet-seed.bitprim.org", 18333 });
+            seeds.push_back({ "testnet-seed.deadalnix.me", 18333 });
+            seeds.push_back({ "testnet-seeder.criptolayer.net", 18333 });
+    #else
+            // Seeds based on satoshi client v0.14.0 plus voskuil.org.
+            seeds.reserve(5);
+            seeds.push_back({ "testnet-seed.bitcoin.jonasschnelli.ch", 18333 });
+            seeds.push_back({ "seed.tbtc.petertodd.org", 18333 });
+            seeds.push_back({ "testnet-seed.bluematt.me", 18333 });
+            seeds.push_back({ "testnet-seed.bitcoin.schildbach.de", 18333 });
+            seeds.push_back({ "testnet-seed.voskuil.org", 18333 });
+    #endif //BITPRIM_CURRENCY_BCH
+#endif //BITPRIM_CURRENCY_LTC
             break;
         }
 

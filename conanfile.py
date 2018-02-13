@@ -33,14 +33,18 @@ class BitprimNetworkConan(ConanFile):
     
     options = {"shared": [True, False],
                "fPIC": [True, False],
-               "with_litecoin": [True, False],
                "with_tests": [True, False],
+               "currency": ['BCH', 'BTC', 'LTC']
     }
+
+            #    "with_litecoin": [True, False],
 
     default_options = "shared=False", \
         "fPIC=True", \
-        "with_litecoin=False", \
-        "with_tests=False"
+        "with_tests=False", \
+        "currency=BCH"
+
+        # "with_litecoin=False", \
 
     generators = "cmake"
     exports_sources = "src/*", "CMakeLists.txt", "cmake/*", "bitprim-networkConfig.cmake.in", "bitprimbuildinfo.cmake", "include/*", "test/*"
@@ -98,7 +102,9 @@ class BitprimNetworkConan(ConanFile):
         cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.fPIC_enabled)
 
         cmake.definitions["WITH_TESTS"] = option_on_off(self.options.with_tests)
-        cmake.definitions["WITH_LITECOIN"] = option_on_off(self.options.with_litecoin)
+        # cmake.definitions["WITH_LITECOIN"] = option_on_off(self.options.with_litecoin)
+
+        cmake.definitions["CURRENCY"] = self.options.currency
 
         if self.settings.compiler != "Visual Studio":
             # cmake.definitions["CONAN_CXX_FLAGS"] += " -Wno-deprecated-declarations"

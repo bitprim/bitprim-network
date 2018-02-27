@@ -23,9 +23,25 @@ from conans import ConanFile, CMake
 def option_on_off(option):
     return "ON" if option else "OFF"
 
+def get_content(path):
+    print(os.path.dirname(os.path.abspath(__file__)))
+    print(os.getcwd())
+    with open(path, 'r') as f:
+        return f.read()
+
+def get_version():
+    return get_content('conan_version')
+
+def get_channel():
+    return get_content('conan_channel')
+
+
 class BitprimNetworkConan(ConanFile):
     name = "bitprim-network"
-    version = "0.7"
+
+    # version = "0.7"
+    version = get_version()
+
     license = "http://www.boost.org/users/license.html"
     url = "https://github.com/bitprim/bitprim-network"
     description = "Bitcoin P2P Network Library"
@@ -47,12 +63,15 @@ class BitprimNetworkConan(ConanFile):
         # "with_litecoin=False", \
 
     generators = "cmake"
+
+    exports = "conan_channel", "conan_version"
     exports_sources = "src/*", "CMakeLists.txt", "cmake/*", "bitprim-networkConfig.cmake.in", "bitprimbuildinfo.cmake", "include/*", "test/*"
+
     package_files = "build/lbitprim-network.a"
     build_policy = "missing"
 
     requires = (("boost/1.66.0@bitprim/stable"),
-                ("bitprim-core/0.7@bitprim/testing"))
+                ("bitprim-core/0.7@bitprim/%s" % get_channel()))
 
     @property
     def msvc_mt_build(self):

@@ -152,7 +152,7 @@ settings::settings(config::settings context)
         }
 
         default:
-        case config::settings::none:
+        case config::settings::none: {}
     }
 }
 

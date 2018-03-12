@@ -83,6 +83,8 @@ else()
   message(FATAL_ERROR "Invalid Cryptocurrency: ${CURRENCY}")
 endif()
 
+message(STATUS "Bitprim: Cryptocurrency: ${CURRENCY}")
+
 
 # Conan infrastructure.
 #==============================================================================

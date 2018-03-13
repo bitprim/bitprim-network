@@ -19,13 +19,15 @@
 
 import os
 from conans import ConanFile, CMake
+from conans import __version__ as conan_version
+from conans.model.version import Version
 
 def option_on_off(option):
     return "ON" if option else "OFF"
 
 def get_content(path):
-    print(os.path.dirname(os.path.abspath(__file__)))
-    print(os.getcwd())
+    # print(os.path.dirname(os.path.abspath(__file__)))
+    # print(os.getcwd())
     with open(path, 'r') as f:
         return f.read()
 
@@ -35,38 +37,37 @@ def get_version():
 def get_channel():
     return get_content('conan_channel')
 
+def get_conan_req_version():
+    return get_content('conan_req_version')
+
 
 class BitprimNetworkConan(ConanFile):
     name = "bitprim-network"
-
-    # version = "0.7"
     version = get_version()
-
     license = "http://www.boost.org/users/license.html"
     url = "https://github.com/bitprim/bitprim-network"
     description = "Bitcoin P2P Network Library"
     settings = "os", "compiler", "build_type", "arch"
+    
+    if conan_version < Version(get_conan_req_version()):
+        raise Exception ("Conan version should be greater or equal than %s" % (get_conan_req_version(), ))
     
     options = {"shared": [True, False],
                "fPIC": [True, False],
                "with_tests": [True, False],
                "currency": ['BCH', 'BTC', 'LTC']
     }
-
             #    "with_litecoin": [True, False],
 
     default_options = "shared=False", \
         "fPIC=True", \
         "with_tests=False", \
         "currency=BCH"
-
         # "with_litecoin=False", \
 
     generators = "cmake"
-
     exports = "conan_channel", "conan_version"
     exports_sources = "src/*", "CMakeLists.txt", "cmake/*", "bitprim-networkConfig.cmake.in", "bitprimbuildinfo.cmake", "include/*", "test/*"
-
     package_files = "build/lbitprim-network.a"
     build_policy = "missing"
 
@@ -90,7 +91,6 @@ class BitprimNetworkConan(ConanFile):
             return False
         else:
             return self.options.shared
-
 
     def config_options(self):
         self.output.info('def config_options(self):')
